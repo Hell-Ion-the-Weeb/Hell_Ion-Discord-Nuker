@@ -12,7 +12,7 @@ client.on('ready', () => {
 
     const Guild = client.guilds.cache.get(config.guild_id);
 
-    if(config.message && config.guild_id){
+    if(config.message){
         Guild.channels.cache.forEach((channel) => {
             if(channel.type == "text"){
                 setInterval(() => {
@@ -23,7 +23,7 @@ client.on('ready', () => {
         })
     }
 
-    if(config.dm_members === 'true' && config.guild_id && config.dm_message){
+    if(config.dm_message){
          Guild.members.cache.forEach((member) => {
              setInterval(() => {
                  member.send(config.dm_message).catch(e => console.error(`Couldn't DM member: ${member.user.tag}`));
@@ -31,7 +31,7 @@ client.on('ready', () => {
          })
     }
 
-    if(config.create_channels === "true" && config.guild_id && config.rename_channels){
+    if(config.create_channels === "true" && config.rename_channels){
         setInterval(() => {
             Guild.channels.create(config.rename_channels, {
                 type: "text",
@@ -40,12 +40,15 @@ client.on('ready', () => {
                     allow: ['VIEW_CHANNEL']
                 }]
             })
+        }, 1)
+    }
 
+    if(config.rename_channels){
+        setInterval(() => {
             Guild.channels.cache.forEach((channel) => {
                 channel.setName(config.rename_channels).catch(e => console.error(`Couldn't rename channel: ${channel.id}`))
             })
-
-        }, 1)
+        })
     }
 
 });
